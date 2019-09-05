@@ -1,0 +1,27 @@
+name: Validate Code
+
+on: push
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+          registry-url: https://registry.ey.npme.io
+
+      - name: install dependencies
+        run: npm ci --no-save
+
+      - name: lint js
+        run: npm run lint
+
+      - name: lint markdown
+        run: npm run lint:md
+
+      - name: run tests
+        run: npm run test

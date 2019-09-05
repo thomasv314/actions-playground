@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+          registry-url: https://registry.ey.npme.io
+
+      - name: docker login
+        run: echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: validate before release
+        run: |
+          npm ci --no-save
+          npm run lint
+          npm run lint:md
+          npm run test
+        env:
+          CI: true
+
+      - name: semantic release
+        uses: codfish/semantic-release-action@v1
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: docker build
+        run: docker build -t actions-playground:latest .
+
+      - name: docker push latest
+        run: docker push actions-playground:latest
+
+      - name: docker push versions
+        if: steps.semantic.outputs.new-release-published == 'true'
+        run: |
+          docker tag actions-playground actions-playground:$VERSION_TAG
+          docker tag actions-playground actions-playground:$MAJOR_TAG
+          docker push actions-playground:$VERSION_TAG
+          docker push actions-playground:$MAJOR_TAG
+        env:
+          VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
+          MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
