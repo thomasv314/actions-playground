@@ -31,8 +31,6 @@ jobs:
         env:
           CI: true
 
-      - run: cat /home/runner/work/_temp/.npmrc
-
       - name: semantic release
         uses: codfish/semantic-release-action@v1
         id: semantic
