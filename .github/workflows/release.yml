@@ -39,18 +39,18 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: docker build
-        run: docker build -t actions-playground:latest .
+        run: docker build -t codfish/actions-playground:latest .
 
       - name: docker push latest
-        run: docker push actions-playground:latest
+        run: docker push codfish/actions-playground:latest
 
       - name: docker push versions
         if: steps.semantic.outputs.new-release-published == 'true'
         run: |
-          docker tag actions-playground actions-playground:$VERSION_TAG
-          docker tag actions-playground actions-playground:$MAJOR_TAG
-          docker push actions-playground:$VERSION_TAG
-          docker push actions-playground:$MAJOR_TAG
+          docker tag codfish/actions-playground codfish/actions-playground:$VERSION_TAG
+          docker tag codfish/actions-playground codfish/actions-playground:$MAJOR_TAG
+          docker push codfish/actions-playground:$VERSION_TAG
+          docker push codfish/actions-playground:$MAJOR_TAG
         env:
           VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
           MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
