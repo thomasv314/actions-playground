@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": false,
   "publishConfig": {
-    "public": true
+    "access": "public"
   },
   "scripts": {
     "test": "echo \"no test specified\"",
