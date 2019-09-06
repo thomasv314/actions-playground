@@ -3,6 +3,10 @@
   "version": "0.0.0-semantically-release",
   "description": "My own testing ground for messing around with GitHub Actions.",
   "main": "index.js",
+  "private": false,
+  "publishConfig": {
+    "public": true
+  },
   "scripts": {
     "test": "echo \"no test specified\"",
     "start": "echo \"hello world\"",
