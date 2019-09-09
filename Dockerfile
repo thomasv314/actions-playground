@@ -6,7 +6,9 @@ WORKDIR /app
 COPY ./package.json ./package-lock.json ./
 RUN npm ci
 
-COPY index.js ./
+COPY src ./
+
+RUN npm run build
 
 EXPOSE 80
 CMD ["npm", "start"]
