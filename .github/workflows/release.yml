@@ -31,18 +31,8 @@ jobs:
         env:
           CI: true
 
-      - name: semantic release
-        uses: codfish/semantic-release-action@v1
-        id: semantic
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: docker build
         run: docker build -t codfish/actions-playground:latest .
-
-      - name: docker push latest
-        run: docker push codfish/actions-playground:latest
 
       - name: build docs
         if: success()
@@ -56,6 +46,16 @@ jobs:
           build_dir: docs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: semantic release
+        uses: codfish/semantic-release-action@v1
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: docker push latest
+        run: docker push codfish/actions-playground:latest
 
       - name: docker push versions
         if: steps.semantic.outputs.new-release-published == 'true'
