@@ -44,6 +44,19 @@ jobs:
       - name: docker push latest
         run: docker push codfish/actions-playground:latest
 
+      - name: build docs
+        if: success()
+        run: npm run docs
+
+      - name: deploy documentation
+        if: success()
+        uses: crazy-max/ghaction-github-pages@master
+        with:
+          target_branch: gh-pages
+          build_dir: docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: docker push versions
         if: steps.semantic.outputs.new-release-published == 'true'
         run: |
