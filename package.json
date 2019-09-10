@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "babel src -d dist",
-    "docs": "jsdoc src -d docs",
+    "build:docs": "jsdoc src -d docs",
     "test": "echo \"no test specified\"",
     "start": "echo \"hello world\"",
     "fix": "npm run format && npm run lint -- --fix",

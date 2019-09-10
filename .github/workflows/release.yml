@@ -34,6 +34,9 @@ jobs:
       - name: docker build
         run: docker build -t codfish/actions-playground:latest .
 
+      - name: build docs
+        run: npm run build:docs
+
       - name: semantic release
         uses: codfish/semantic-release-action@v1
         id: semantic
@@ -44,12 +47,7 @@ jobs:
       - name: docker push latest
         run: docker push codfish/actions-playground:latest
 
-      - name: build docs
-        if: success()
-        run: npm run docs
-
       - name: deploy documentation
-        if: success()
         uses: crazy-max/ghaction-github-pages@7bb2b66
         with:
           target_branch: gh-pages
