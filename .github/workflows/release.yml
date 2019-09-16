@@ -50,6 +50,8 @@ jobs:
         run: |
           npm run build:docs
           rm ./docs/.gitignore
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: deploy documentation
         uses: crazy-max/ghaction-github-pages@7bb2b66
