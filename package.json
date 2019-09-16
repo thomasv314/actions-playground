@@ -8,14 +8,14 @@
     "access": "public"
   },
   "scripts": {
-    "build": "cod-scripts build -d core",
+    "build": "cod-scripts build",
     "build:watch": "npm run build -- --watch",
     "build:docs": "jsdoc src -d docs",
     "start": "echo \"No npm start script yet.\"",
     "format": "cod-scripts format",
     "lint": "cod-scripts lint",
     "lint:md": "markdownlint -i node_modules -i dist .",
-    "test": "cod-scripts test",
+    "test": "echo \"No tests yet.\"",
     "validate": "cod-scripts validate"
   },
   "repository": {
