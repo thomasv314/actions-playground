@@ -3,7 +3,7 @@ name: Troubleshooting Github Actions
 on: [push, pull_request]
 
 jobs:
-  commitlint:
+  troubleshooting:
     runs-on: ubuntu-latest
 
     steps:
