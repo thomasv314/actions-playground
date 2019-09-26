@@ -1,5 +1,5 @@
 /**
- * Test function.
+ * Test function
  *
  * @param {boolean} maybe - Yea?
  * @returns {string}

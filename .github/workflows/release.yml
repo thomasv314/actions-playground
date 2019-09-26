@@ -35,7 +35,7 @@ jobs:
         run: docker build -t codfish/actions-playground:latest .
 
       - name: semantic release
-        uses: codfish/semantic-release-action@branch-input
+        uses: codfish/semantic-release-action@v1
         id: semantic
         with:
           branch: next
