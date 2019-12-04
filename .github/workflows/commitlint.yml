@@ -8,11 +8,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
+      - run: git fetch origin
+
+      - name: troubleshooting
+        run: |
+          git remote -v
+          git branch -a
 
       - run: npm ci --no-save
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - run: npx commitlint --from="origin/${{ github.base_ref }}" --to="origin/${{ github.head_ref }}"
+      - run:
+          npm run lint:commit -- --from="origin/${{ github.base_ref }}"
+          --to="origin/${{github.head_ref }}"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
