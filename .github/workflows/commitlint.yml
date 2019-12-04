@@ -13,6 +13,8 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - run: npx commitlint --from="origin/${{ github.base_ref }}" --to="origin/${{ github.head_ref }}"
+      - run:
+          npm run lint:commit -- --from="origin/${{ github.base_ref }}"
+          --to="origin/${{github.head_ref }}"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
