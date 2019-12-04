@@ -8,12 +8,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
-      - run: git fetch origin
+
+      - run: git fetch --all
 
       - name: troubleshooting
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           git remote -v
           git branch -a
+          echo "$GITHUB_CONTEXT"
 
       - run: npm ci --no-save
         env:
