@@ -1,10 +1,9 @@
 name: Validate Code
 
 on:
-  push:
-    branches:
-      - '*'
-      - '!master'
+  pull_request:
+    branches-ignore:
+      - 'master'
 
 jobs:
   validate:
