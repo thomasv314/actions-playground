@@ -1,9 +1,6 @@
 name: Validate Code
 
-on:
-  pull_request:
-    branches-ignore:
-      - 'master'
+on: pull_request
 
 jobs:
   validate:
