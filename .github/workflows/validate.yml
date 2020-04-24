@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v1
 
       # in order to get all the proper references, allowing commitlint to work
       - run: git fetch --all
@@ -27,7 +27,9 @@ jobs:
       - name: install dependencies
         run: npm ci --no-save
 
-      - run: npm run lint:commit -- --from="${{ github.ref }}" --to="origin/${{github.head_ref }}"
+      - run:
+          npm run lint:commit -- --from="origin/${{ github.ref }}" --to="origin/${{github.head_ref
+          }}"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
