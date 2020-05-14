@@ -4,10 +4,6 @@
   "description": "My own testing ground for messing around with GitHub Actions.",
   "main": "dist/index.js",
   "private": false,
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/",
-    "access": "public"
-  },
   "scripts": {
     "build": "cod-scripts build",
     "build:watch": "npm run build -- --watch",
