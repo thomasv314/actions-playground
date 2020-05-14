@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - master
+      - gpr
 
 jobs:
   release:
@@ -24,22 +24,24 @@ jobs:
 
       - name: validate before release
         run: |
+          printenv
           npm ci --no-save
           npm run lint
           npm run lint:md
           npm run test
         env:
+          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI: true
 
       - name: docker build
         run: docker build -t codfish/actions-playground:latest .
 
       - name: semantic release
-        uses: codfish/semantic-release-action@v1
-        id: semantic
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: docker push latest
         run: docker push codfish/actions-playground:latest
@@ -49,7 +51,7 @@ jobs:
           npm run build:docs
           rm ./docs/.gitignore
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: deploy documentation
         uses: crazy-max/ghaction-github-pages@7bb2b66

@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "private": false,
   "publishConfig": {
+    "registry": "https://npm.pkg.github.com/",
     "access": "public"
   },
   "scripts": {
@@ -22,6 +23,16 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codfish/actions-playground.git"
+  },
+  "release": {
+    "branches": [
+      "master",
+      {
+        "name": "gpr",
+        "channel": "gpr",
+        "prerelease": "gpr"
+      }
+    ]
   },
   "keywords": [],
   "author": "",
