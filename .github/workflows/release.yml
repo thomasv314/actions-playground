@@ -36,8 +36,8 @@ jobs:
       - name: docker build
         run: docker build -t codfish/actions-playground:latest .
 
-      - name: semantic release
-        run: npx semantic-release
+      - name: Semantic Release
+        uses: codfish/semantic-release-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
