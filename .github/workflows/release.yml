@@ -52,12 +52,12 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: deploy documentation
-        uses: crazy-max/ghaction-github-pages@7bb2b66
+        uses: jamesives/github-pages-deploy-action@3.7.1
         with:
-          target_branch: gh-pages
-          build_dir: docs
-        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs # The folder the action should deploy.
+          CLEAN: true # Automatically remove deleted files from the deploy branch
 
       - name: docker push versions
         if: steps.semantic.outputs.new-release-published == 'true'
