@@ -17,19 +17,13 @@ jobs:
           node-version: 12.x
 
       - name: docker login
-        run: echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+          echo "$GCR_TOKEN" | docker login ghcr.io -u codfish --password-stdin
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: validate before release
-        run: |
-          npm ci --no-save
-          npm run lint
-          npm run lint:md
-          npm run test
-        env:
-          CI: true
+          GCR_TOKEN: ${{ secrets.GCR_TOKEN }}
 
       - name: docker build
         run: docker build -t codfish/actions-playground:latest .
@@ -41,8 +35,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: docker push latest
-        run: docker push codfish/actions-playground:latest
+      - name: push docker images to dockerhub & GCR
+        if: steps.semantic.outputs.new-release-published == 'true'
+        run: |
+          docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:latest
+          docker tag codfish/actions-playground codfish/actions-playground:$VERSION_TAG
+          docker tag codfish/actions-playground codfish/actions-playground:$MAJOR_TAG
+          docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:$VERSION_TAG
+          docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:$MAJOR_TAG
+
+          docker push codfish/actions-playground:latest
+          docker push codfish/actions-playground:$VERSION_TAG
+          docker push codfish/actions-playground:$MAJOR_TAG
+          docker push ghcr.io/codfish/actions-playground:latest
+          docker push ghcr.io/codfish/actions-playground:$VERSION_TAG
+          docker push ghcr.io/codfish/actions-playground:$MAJOR_TAG
+        env:
+          VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
+          MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
 
       - name: build docs
         run: |
@@ -58,14 +68,3 @@ jobs:
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: docs # The folder the action should deploy.
           CLEAN: true # Automatically remove deleted files from the deploy branch
-
-      - name: docker push versions
-        if: steps.semantic.outputs.new-release-published == 'true'
-        run: |
-          docker tag codfish/actions-playground codfish/actions-playground:$VERSION_TAG
-          docker tag codfish/actions-playground codfish/actions-playground:$MAJOR_TAG
-          docker push codfish/actions-playground:$VERSION_TAG
-          docker push codfish/actions-playground:$MAJOR_TAG
-        env:
-          VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
-          MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
