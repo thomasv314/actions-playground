@@ -29,7 +29,7 @@ jobs:
         run: docker build -t codfish/actions-playground:latest .
 
       - name: semantic release
-        uses: codfish/semantic-release-action@v1
+        uses: docker://ghcr.io/codfish/semantic-release-action:v1
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
