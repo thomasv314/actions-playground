@@ -30,6 +30,20 @@ jobs:
 
       - name: semantic release
         uses: docker://ghcr.io/codfish/semantic-release-action:v1
+        id: semantic-dry-run
+        with:
+          dry_run: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Dump semantic outputs
+        env:
+          SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic.outputs) }}
+        run: echo "$SEMANTIC_OUTPUTS"
+
+      - name: semantic release
+        uses: docker://ghcr.io/codfish/semantic-release-action:v1
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
