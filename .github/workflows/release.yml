@@ -30,7 +30,7 @@ jobs:
       - name: docker build
         run: docker build -t codfish/actions-playground:latest .
 
-      - name: semantic release
+      - name: semantic release dry run
         uses: docker://ghcr.io/codfish/semantic-release-action:v1
         id: semantic-dry-run
         with:
@@ -40,9 +40,10 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Dump semantic outputs
-        env:
-          SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic.outputs) }}
-        run: echo "$SEMANTIC_OUTPUTS"
+        if: steps.semantic.outputs.new-release-published == 'true'
+        run: |
+          echo "NEW_RELEASE_PUBLISHED: $NEW_RELEASE_PUBLISHED"
+          echo "RELEASE_VERSION: $RELEASE_VERSION"
 
       - name: semantic release
         uses: docker://ghcr.io/codfish/semantic-release-action:v1
