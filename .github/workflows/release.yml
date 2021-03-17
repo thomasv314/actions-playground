@@ -40,10 +40,10 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Dump semantic outputs
-        if: steps.semantic.outputs.new-release-published == 'true'
-        run: |
-          echo "NEW_RELEASE_PUBLISHED: $NEW_RELEASE_PUBLISHED"
-          echo "RELEASE_VERSION: $RELEASE_VERSION"
+        if: steps.semantic-dry-run.outputs.new-release-published == 'true'
+        run: echo "$SEMANTIC_OUTPUTS"
+        env:
+          SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic.outputs) }}
 
       - name: semantic release
         uses: docker://ghcr.io/codfish/semantic-release-action:v1
