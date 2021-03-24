@@ -5,8 +5,7 @@
   "main": "dist/index.js",
   "private": false,
   "publishConfig": {
-    "access": "public",
-    "tag": "next"
+    "access": "public"
   },
   "scripts": {
     "build": "cod-scripts build",
