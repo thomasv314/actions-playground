@@ -4,70 +4,86 @@ on:
   push:
     branches:
       - next
+      - master
+      - alpha
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
 
       - uses: actions/setup-node@v1
         with:
           node-version: 12.x
 
       - name: docker login
-        run: echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+          echo "$GCR_TOKEN" | docker login ghcr.io -u codfish --password-stdin
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: validate before release
-        run: |
-          npm ci --no-save
-          npm run lint
-          npm run lint:md
-          npm run test
-        env:
-          CI: true
+          GCR_TOKEN: ${{ secrets.GCR_TOKEN }}
 
       - name: docker build
         run: docker build -t codfish/actions-playground:latest .
 
-      - name: semantic release
-        uses: codfish/semantic-release-action@v1
-        id: semantic
+      - name: semantic release dry run
+        uses: docker://ghcr.io/codfish/semantic-release-action:v1
+        id: semantic-dry-run
         with:
-          branch: next
+          dry_run: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: docker push latest
-        run: docker push codfish/actions-playground:latest
+      - name: Dump semantic outputs
+        if: steps.semantic-dry-run.outputs.new-release-published == 'true'
+        run: echo "$SEMANTIC_OUTPUTS"
+        env:
+          SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic-dry-run.outputs) }}
+
+      - name: semantic release
+        uses: docker://ghcr.io/codfish/semantic-release-action:v1
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: push docker images to dockerhub & GCR
+        if: steps.semantic.outputs.new-release-published == 'true'
+        run: |
+          docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:latest
+          docker tag codfish/actions-playground codfish/actions-playground:$VERSION_TAG
+          docker tag codfish/actions-playground codfish/actions-playground:$MAJOR_TAG
+          docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:$VERSION_TAG
+          docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:$MAJOR_TAG
+
+          docker push codfish/actions-playground:latest
+          docker push codfish/actions-playground:$VERSION_TAG
+          docker push codfish/actions-playground:$MAJOR_TAG
+          docker push ghcr.io/codfish/actions-playground:latest
+          docker push ghcr.io/codfish/actions-playground:$VERSION_TAG
+          docker push ghcr.io/codfish/actions-playground:$MAJOR_TAG
+        env:
+          VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
+          MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
 
       - name: build docs
         run: |
+          npm ci --no-save
           npm run build:docs
           rm ./docs/.gitignore
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: deploy documentation
-        uses: crazy-max/ghaction-github-pages@7bb2b66
+        uses: jamesives/github-pages-deploy-action@4.1.0
         with:
-          target_branch: gh-pages
-          build_dir: docs
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: docker push versions
-        if: steps.semantic.outputs.new-release-published == 'true'
-        run: |
-          docker tag codfish/actions-playground codfish/actions-playground:$VERSION_TAG
-          docker tag codfish/actions-playground codfish/actions-playground:$MAJOR_TAG
-          docker push codfish/actions-playground:$VERSION_TAG
-          docker push codfish/actions-playground:$MAJOR_TAG
-        env:
-          VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
-          MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
+          branch: gh-pages
+          folder: docs

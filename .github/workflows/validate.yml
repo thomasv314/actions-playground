@@ -1,24 +1,38 @@
 name: Validate Code
 
-on:
-  push:
-    branches:
-      - '*'
-      - '!master'
+on: pull_request
 
 jobs:
   validate:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v1
+
+      # in order to get all the proper references, allowing commitlint to work
+      - run: git fetch --all
 
       - uses: actions/setup-node@v1
         with:
           node-version: 12.x
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: troubleshooting
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          git remote -v
+          git branch -a
+          echo "$GITHUB_CONTEXT"
 
       - name: install dependencies
         run: npm ci --no-save
+
+      - run:
+          npm run lint:commit -- --from="origin/${{ github.base_ref }}"
+          --to="origin/${{github.head_ref }}"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: lint js
         run: npm run lint
@@ -28,3 +42,26 @@ jobs:
 
       - name: run tests
         run: npm run test
+
+      - name: publish to npm
+        id: pr-publish
+        run: |
+          version="0.0.0-PR-${PR}--$(echo ${SHA} | cut -c -7)"
+          npm version $version --no-git-tag-version
+          npm publish --access public --tag pr
+          echo "::set-output name=pr_version::$version"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PR: ${{ github.event.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🚀  PR version published: `${{ steps.pr-publish.outputs.pr_version }}`'
+            })

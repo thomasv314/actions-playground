@@ -7,9 +7,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v1
 
       - run: printenv
+
+      - name: docker login
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+          echo "$GCR_TOKEN" | docker login ghcr.io -u codfish --password-stdin
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          GCR_TOKEN: ${{ secrets.GCR_TOKEN }}
 
       # https://help.github.com/en/articles/contexts-and-expression-syntax-for-github-actions
       - name: Dump GitHub context
@@ -41,4 +50,3 @@ jobs:
         env:
           STEPS_CONTEXT: ${{ toJson(steps) }}
         run: echo "$STEPS_CONTEXT"
-
