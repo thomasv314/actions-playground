@@ -5,7 +5,7 @@
  * @returns {string}
  */
 export function testing(yea) {
-  return yea ? 'Ye' : 'No';
+  return yea ? 'Yes' : 'No';
 }
 
 export default { testing };
