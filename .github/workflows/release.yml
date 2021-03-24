@@ -82,8 +82,13 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: deploy documentation
-        uses: jamesives/github-pages-deploy-action@4.1.0
-        with:
-          branch: gh-pages
-          folder: docs
+      # does not work...
+      # Error: The deploy step encountered an error: The process '/usr/bin/git' failed with exit code 128 ❌
+      # Deployment failed! ❌
+      # ::set-output name=deployment-status::failed
+      #
+      # - name: deploy documentation
+      #   uses: jamesives/github-pages-deploy-action@4.1.0
+      #   with:
+      #     branch: gh-pages
+      #     folder: docs
