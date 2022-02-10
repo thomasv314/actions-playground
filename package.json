@@ -23,7 +23,7 @@
     "type": "git",
     "url": "git+https://github.com/codfish/actions-playground.git"
   },
-  "keywords": [],
+  "keywords": ["foobar"],
   "author": "",
   "license": "MIT",
   "bugs": {
