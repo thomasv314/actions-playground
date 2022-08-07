@@ -62,7 +62,8 @@ jobs:
 
       - uses: codfish/semantic-release-action@additional-packages
         with:
-          additional_plugins: ['@google/semantic-release-replace-plugin', '@semantic-release/git']
+          additional_plugins: |
+            ['@google/semantic-release-replace-plugin', '@semantic-release/git']
           plugins: |
             [
               "@semantic-release/commit-analyzer",
