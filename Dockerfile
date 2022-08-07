@@ -8,7 +8,7 @@ RUN npm ci
 
 COPY src src
 
-ENV RELEASE_VERSION=4.1.0
+ENV RELEASE_VERSION=4.2.0
 
 RUN npm run build
 
