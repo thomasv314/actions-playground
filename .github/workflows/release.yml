@@ -60,49 +60,92 @@ jobs:
         env:
           SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic-dry-run.outputs) }}
 
-      - name: semantic release
-        uses: docker://ghcr.io/codfish/semantic-release-action:v1
-        id: semantic
+      - uses: codfish/semantic-release-action@additional-packages
         with:
-          branches: |
+          additional_plugins: ['@google/semantic-release-replace-plugin', '@semantic-release/git']
+          plugins: |
             [
-              '+([0-9])?(.{+([0-9]),x}).x',
-              'main',
-              'next',
-              'next-major',
-              {name: 'beta', prerelease: true},
-              {name: 'alpha', prerelease: true}
+              "@semantic-release/commit-analyzer",
+              [
+                "@google/semantic-release-replace-plugin",
+                {
+                  "replacements": [
+                    {
+                      "files": ["Dockerfile"],
+                      "from": "RELEASE_VERSION=.*",
+                      "to": "RELEASE_VERSION=${nextRelease.version}",
+                      "results": [
+                        {
+                          "file": "Dockerfile",
+                          "hasChanged": true,
+                          "numMatches": 1,
+                          "numReplacements": 1
+                        }
+                      ],
+                      "countMatches": true
+                    }
+                  ]
+                }
+              ],
+              [
+                "@semantic-release/git",
+                {
+                  "assets": ["Dockerfile"],
+                  "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+                }
+              ],
+              "@semantic-release/release-notes-generator",
+              "@semantic-release/npm",
+              "@semantic-release/github"
             ]
+          additional_packages: |
+            ['@semantic-release/exec']
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: push docker images to dockerhub & GCR
-        if: steps.semantic.outputs.new-release-published == 'true'
-        run: |
-          docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:latest
-          docker tag codfish/actions-playground codfish/actions-playground:$VERSION_TAG
-          docker tag codfish/actions-playground codfish/actions-playground:$MAJOR_TAG
-          docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:$VERSION_TAG
-          docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:$MAJOR_TAG
+      # - name: semantic release
+      #   uses: docker://ghcr.io/codfish/semantic-release-action:v1
+      #   id: semantic
+      #   with:
+      #     branches: |
+      #       [
+      #         '+([0-9])?(.{+([0-9]),x}).x',
+      #         'main',
+      #         'next',
+      #         'next-major',
+      #         {name: 'beta', prerelease: true},
+      #         {name: 'alpha', prerelease: true}
+      #       ]
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-          docker push codfish/actions-playground:latest
-          docker push codfish/actions-playground:$VERSION_TAG
-          docker push codfish/actions-playground:$MAJOR_TAG
-          docker push ghcr.io/codfish/actions-playground:latest
-          docker push ghcr.io/codfish/actions-playground:$VERSION_TAG
-          docker push ghcr.io/codfish/actions-playground:$MAJOR_TAG
-        env:
-          VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
-          MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
+      # - name: push docker images to dockerhub & GCR
+      #   if: steps.semantic.outputs.new-release-published == 'true'
+      #   run: |
+      #     docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:latest
+      #     docker tag codfish/actions-playground codfish/actions-playground:$VERSION_TAG
+      #     docker tag codfish/actions-playground codfish/actions-playground:$MAJOR_TAG
+      #     docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:$VERSION_TAG
+      #     docker tag codfish/actions-playground ghcr.io/codfish/actions-playground:$MAJOR_TAG
 
-      - name: build docs
-        run: |
-          npm ci --no-save
-          npm run build:docs
-          rm ./docs/.gitignore
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #     docker push codfish/actions-playground:latest
+      #     docker push codfish/actions-playground:$VERSION_TAG
+      #     docker push codfish/actions-playground:$MAJOR_TAG
+      #     docker push ghcr.io/codfish/actions-playground:latest
+      #     docker push ghcr.io/codfish/actions-playground:$VERSION_TAG
+      #     docker push ghcr.io/codfish/actions-playground:$MAJOR_TAG
+      #   env:
+      #     VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
+      #     MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
+
+      # - name: build docs
+      #   run: |
+      #     npm ci --no-save
+      #     npm run build:docs
+      #     rm ./docs/.gitignore
+      #   env:
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # does not work...
       # Error: The deploy step encountered an error: The process '/usr/bin/git' failed with exit code 128 ❌
@@ -114,3 +157,6 @@ jobs:
       #   with:
       #     branch: gh-pages
       #     folder: docs
+
+      # - name: Install extra dependencies
+      #   run: npm install -g @semantic-release/exec
