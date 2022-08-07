@@ -61,6 +61,8 @@ jobs:
 
       - uses: codfish/semantic-release-action@additional-packages
         with:
+          branches: |
+            ['main', 'next', 'next-major', {name: 'beta', prerelease: true}, {name: 'alpha', prerelease: true}]
           additional_packages: |
             ['@google/semantic-release-replace-plugin', '@semantic-release/git']
           plugins: |
