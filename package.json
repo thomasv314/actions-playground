@@ -23,7 +23,9 @@
     "type": "git",
     "url": "git+https://github.com/codfish/actions-playground.git"
   },
-  "keywords": ["foobar"],
+  "keywords": [
+    "foobar"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
@@ -33,7 +35,7 @@
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
-    "cod-scripts": "^3.3.0",
+    "cod-scripts": "^0.0.0-PR-194--e725f84",
     "jsdoc": "^3.6.3",
     "markdownlint-cli": "^0.18.0"
   },
