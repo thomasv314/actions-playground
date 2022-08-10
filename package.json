@@ -2,16 +2,15 @@
   "name": "@codfish/actions-playground",
   "version": "0.0.0-semantically-release",
   "description": "My own testing ground for messing around with GitHub Actions.",
-  "main": "dist/index.js",
   "private": false,
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "cod-scripts build",
-    "build:watch": "npm run build -- --watch",
+    "start": "PUBLIC_URL=/ react-scripts start",
+    "build": "react-scripts build",
     "build:docs": "jsdoc src -d docs",
-    "start": "echo \"No npm start script yet.\"",
+    "eject": "react-scripts eject",
     "format": "cod-scripts format",
     "lint": "cod-scripts lint",
     "lint:md": "markdownlint -i node_modules -i dist .",
@@ -23,7 +22,9 @@
     "type": "git",
     "url": "git+https://github.com/codfish/actions-playground.git"
   },
-  "keywords": ["foobar"],
+  "keywords": [
+    "foobar"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
@@ -33,12 +34,19 @@
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
-    "cod-scripts": "^3.3.0",
+    "cod-scripts": "^0.0.0-PR-194--e725f84",
     "jsdoc": "^3.6.3",
     "markdownlint-cli": "^0.18.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.7.4"
+    "@babel/runtime": "^7.7.4",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^14.4.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1",
+    "web-vitals": "^2.1.4"
   },
   "eslintConfig": {
     "extends": [
@@ -50,5 +58,17 @@
       "pre-commit": "cod-scripts pre-commit",
       "commit-msg": "cod-scripts commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
