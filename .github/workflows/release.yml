@@ -102,8 +102,8 @@ jobs:
                     },
                     {
                       'files': ['provisioning/Chart.yml'],
-                      'from': 'version: .*',
-                      'to': 'version: ${nextRelease.version}',
+                      'from': 'ersion: .*',
+                      'to': 'ersion: ${nextRelease.version}',
                       'results': [
                         {
                           'file': 'provisioning/Chart.yml',
@@ -117,7 +117,7 @@ jobs:
                   ]
                 }
               ],
-              [ '@semantic-release/git', {'assets': ['Dockerfile', 'provisioning/Chart.yaml']} ],
+              [ '@semantic-release/git', {'assets': ['Dockerfile', 'provisioning/Chart.yml']} ],
               '@semantic-release/release-notes-generator',
               '@semantic-release/npm',
               '@semantic-release/github'
