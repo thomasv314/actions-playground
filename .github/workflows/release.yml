@@ -102,8 +102,8 @@ jobs:
                     },
                     {
                       'files': ['provisioning/Chart.yml'],
-                      'from': 'ersion: .*',
-                      'to': 'ersion: ${nextRelease.version}',
+                      'from': 'version: .*',
+                      'to': 'version: ${nextRelease.version}',
                       'results': [
                         {
                           'file': 'provisioning/Chart.yml',
