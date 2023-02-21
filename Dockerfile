@@ -4,6 +4,9 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY ./package.json ./package-lock.json ./
+COPY ./src ./src
+COPY ./public ./public
+
 RUN npm ci
 
 COPY src src
