@@ -71,16 +71,6 @@ jobs:
         env:
           SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic-dry-run.outputs) }}
 
-      - shell: bash
-        if: steps.semantic.outputs.new-release-published == 'true'
-        run: |
-          echo "DOCKER_TAGS=${DOCKER_TAGS},${RELEASE_VERSION}" >> $GITHUB_ENV;
-
-      - name: echo DOCKER_TAGS
-        shell: bash
-        run: |
-          echo $DOCKER_TAGS;
-
       - name: semantic release
         uses: docker://ghcr.io/codfish/semantic-release-action@sha256:91ea452696d93a34a30aff20b34614b75e8fddc82b598fc8fa57c3ac07e6d6da
         id: semantic
@@ -139,7 +129,12 @@ jobs:
       - shell: bash
         if: steps.semantic.outputs.new-release-published == 'true'
         run: |
-          DOCKER_TAGS="${RELEASE_TAG},$"
+          echo "DOCKER_TAGS=${DOCKER_TAGS},${RELEASE_VERSION}" >> $GITHUB_ENV;
+
+      - name: echo DOCKER_TAGS
+        shell: bash
+        run: |
+          echo $DOCKER_TAGS;
 
       - name: push docker images to dockerhub & GCR
         if: steps.semantic.outputs.new-release-published == 'true'
