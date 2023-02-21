@@ -6,16 +6,18 @@ jobs:
   validate:
     runs-on: ubuntu-latest
 
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
     steps:
-      - uses: actions/checkout@v1
-
-      # in order to get all the proper references, allowing commitlint to work
-      - run: git fetch --all
-
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
         with:
-          node-version: 18.x
-          registry-url: 'https://registry.npmjs.org'
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
 
       - name: troubleshooting
         env:
@@ -26,7 +28,7 @@ jobs:
           echo "$GITHUB_CONTEXT"
 
       - name: install dependencies
-        run: npm ci --no-save
+        run: npm ci
 
       - run:
           npm run lint:commit -- --from="origin/${{ github.base_ref }}"
