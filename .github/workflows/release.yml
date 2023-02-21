@@ -92,12 +92,12 @@ jobs:
                       'countMatches': true
                     },
                     {
-                      'files': ['provisioning/Chart.yaml'],
+                      'files': ['provisioning/Chart.yml'],
                       'from': 'ersion: .*',
                       'to': 'ersion: ${nextRelease.version}',
                       'results': [
                         {
-                          'file': 'provisioning/Chart.yaml',
+                          'file': 'provisioning/Chart.yml',
                           'hasChanged': true,
                           'numMatches': 2,
                           'numReplacements': 2
