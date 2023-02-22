@@ -10,7 +10,7 @@ RUN npm ci
 COPY ./src ./src
 COPY ./public ./public
 
-ENV RELEASE_VERSION=4.7.1
+ENV RELEASE_VERSION=4.8.0
 
 RUN npm run build
 
