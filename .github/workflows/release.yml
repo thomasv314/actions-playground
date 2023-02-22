@@ -10,6 +10,11 @@ on:
       - 'next-major'
       - '+([0-9])?(.{+([0-9]),x}).x'
 
+permissions:
+  id-token: write
+  contents: write
+  issues: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -123,7 +128,7 @@ jobs:
               '@semantic-release/github'
             ]
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SEMANTIC_GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - shell: bash
