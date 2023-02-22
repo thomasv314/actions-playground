@@ -16,8 +16,11 @@ jobs:
           fetch-depth: 0
 
       - uses: actions/setup-node@v3
+        id: setup-node
         with:
+          cache: 'npm'
           node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: troubleshooting
         env:
@@ -27,8 +30,15 @@ jobs:
           git branch -a
           echo "$GITHUB_CONTEXT"
 
+      - uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('**/package-lock.json') }}
+
       - name: install dependencies
-        run: npm ci
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline --no-audit
 
       - run:
           npm run lint:commit -- --from="origin/${{ github.base_ref }}"
