@@ -10,11 +10,6 @@ on:
       - 'next-major'
       - '+([0-9])?(.{+([0-9]),x}).x'
 
-permissions:
-  id-token: write
-  contents: write
-  issues: write
-
 jobs:
   release:
     runs-on: ubuntu-latest
