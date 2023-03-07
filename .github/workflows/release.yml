@@ -49,7 +49,7 @@ jobs:
         run: docker build -t codfish/actions-playground:latest .
 
       - name: semantic release dry run
-        uses: codfish/semantic-release-action@upgrade
+        uses: codfish/semantic-release-action@main
         id: semantic-dry-run
         with:
           dry_run: true
