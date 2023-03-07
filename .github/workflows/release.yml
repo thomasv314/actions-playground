@@ -72,7 +72,7 @@ jobs:
           SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic-dry-run.outputs) }}
 
       - name: semantic release
-        uses: codfish/semantic-release-action@upgrade
+        uses: codfish/semantic-release-action@main
         id: semantic
         with:
           branches: |
