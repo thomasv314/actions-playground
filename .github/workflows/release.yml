@@ -72,7 +72,7 @@ jobs:
           SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic-dry-run.outputs) }}
 
       - name: semantic-release
-        uses: docker://ghcr.io/codfish/semantic-release-action@sha256:91ea452696d93a34a30aff20b34614b75e8fddc82b598fc8fa57c3ac07e6d6da
+        uses: docker://ghcr.io/codfish/semantic-release-action@sha256:601fd6c1db9efbcfabd34ba4563e7d0b9eb0f8ba11316e3e7d6a9b6883dac8ba
         id: semantic
         with:
           branches: |
