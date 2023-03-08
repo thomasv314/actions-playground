@@ -48,8 +48,8 @@ jobs:
       - name: docker build
         run: docker build -t codfish/actions-playground:latest .
 
-      - name: semantic release dry-run
-        uses: codfish/semantic-release-action@upgrade
+      - name: semantic release dry run
+        uses: codfish/semantic-release-action@v2
         id: semantic-dry-run
         with:
           dry_run: true
@@ -72,7 +72,7 @@ jobs:
           SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic-dry-run.outputs) }}
 
       - name: semantic-release
-        uses: codfish/semantic-release-action@upgrade
+        uses: docker://ghcr.io/codfish/semantic-release-action@sha256:91ea452696d93a34a30aff20b34614b75e8fddc82b598fc8fa57c3ac07e6d6da
         id: semantic
         with:
           branches: |
