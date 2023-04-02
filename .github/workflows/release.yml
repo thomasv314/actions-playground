@@ -65,14 +65,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Dump semantic outputs
-        if: steps.semantic-dry-run.outputs.new-release-published == 'true'
-        run: echo "$SEMANTIC_OUTPUTS"
-        env:
-          SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic-dry-run.outputs) }}
-
       - name: semantic-release
-        uses: docker://ghcr.io/codfish/semantic-release-action@sha256:601fd6c1db9efbcfabd34ba4563e7d0b9eb0f8ba11316e3e7d6a9b6883dac8ba
+        uses: codfish/semantic-release-action@more-outputs
         id: semantic
         with:
           branches: |
@@ -125,6 +119,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SEMANTIC_GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Dump semantic outputs
+        if: steps.semantic-dry-run.outputs.new-release-published == 'true'
+        run: |
+          echo "Outputs:\n"
+          echo "$SEMANTIC_OUTPUTS"
+          echo "\n-----\n\nEnvironment Variables:\n"
+          echo "NEW_RELEASE_PUBLISHED: $NEW_RELEASE_PUBLISHED"
+          echo "RELEASE_VERSION: $RELEASE_VERSION"
+          echo "RELEASE_MAJOR: $RELEASE_MAJOR"
+          echo "RELEASE_MINOR: $RELEASE_MINOR"
+          echo "RELEASE_PATCH: $RELEASE_PATCH"
+          echo "RELEASE_NOTES: $RELEASE_NOTES"
+          echo "RELEASE_TYPE: $RELEASE_TYPE"
+          echo "RELEASE_CHANNEL: $RELEASE_CHANNEL"
+          echo "RELEASE_GIT_HEAD: $RELEASE_GIT_HEAD"
+          echo "RELEASE_GIT_TAG: $RELEASE_GIT_TAG"
+          echo "RELEASE_NAME: $RELEASE_NAME"
+        env:
+          SEMANTIC_OUTPUTS: ${{ toJson(steps.semantic-dry-run.outputs) }}
 
       - shell: bash
         if: steps.semantic.outputs.new-release-published == 'true'

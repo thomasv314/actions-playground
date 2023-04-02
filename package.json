@@ -34,7 +34,7 @@
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
-    "cod-scripts": "^0.0.0-PR-194--e725f84",
+    "cod-scripts": "^12.0.0",
     "jsdoc": "^3.6.3",
     "markdownlint-cli": "^0.18.0"
   },
