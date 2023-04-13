@@ -30,7 +30,6 @@
   "bugs": {
     "url": "https://github.com/codfish/actions-playground/issues"
   },
-  "homepage": "https://github.com/codfish/actions-playground#readme",
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",

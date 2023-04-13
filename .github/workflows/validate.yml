@@ -57,6 +57,13 @@ jobs:
       - name: run tests
         run: npm run test
 
+      - name: run build
+        run: npm run build
+
+      - run: npm install -g @lhci/cli@0.11.x
+
+      - run: lhci autorun
+
       - name: publish to npm
         id: pr-publish
         run: |
