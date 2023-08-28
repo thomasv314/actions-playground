@@ -1,1 +1,1 @@
-testing pr title squash merges
+testing pr title squash merges with breaking change
