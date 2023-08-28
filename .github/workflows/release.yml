@@ -66,7 +66,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: semantic-release
-        uses: codfish/semantic-release-action@more-outputs
+        uses: codfish/semantic-release-action@main
         id: semantic
         with:
           branches: |
