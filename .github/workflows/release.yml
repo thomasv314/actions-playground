@@ -52,26 +52,16 @@ jobs:
         uses: codfish/semantic-release-action@v2
         id: semantic-dry-run
         with:
-          dry_run: true
-          branches: |
-            [
-              'main',
-              'next',
-              'next-major',
-              {name: 'beta', prerelease: true},
-              {name: 'alpha', prerelease: true}
-            ]
+          dry-run: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: semantic-release
-        uses: codfish/semantic-release-action@main
+        uses: codfish/semantic-release-action@upgrade
         id: semantic
         with:
-          branches: |
-            ['main', 'next', 'next-major', {name: 'beta', prerelease: true}, {name: 'alpha', prerelease: true}]
-          additional_packages: |
+          additional-packages: |
             ['@google/semantic-release-replace-plugin', '@semantic-release/git']
           plugins: |
             [
