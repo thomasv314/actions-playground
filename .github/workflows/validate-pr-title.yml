@@ -1,0 +1,30 @@
+name: Validate pr title
+
+on:
+  pull_request:
+    types: [edited, opened, reopened]
+
+jobs:
+  validate-pr-title:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: install commitlint deps
+        run: npm install @commitlint/{cli,config-angular}
+
+      # todo: loosen restrictions set in @commitlint/config-angular to allow for more flexibility
+      - name: create commitlint config without yaml errors
+        run: |
+          echo "module.exports = {extends: ['@commitlint/config-angular']}" > commitlint.config.js
+
+      - name: Validate PR title
+        run: |
+          echo "${{ github.event.pull_request.title }}" | npx -y --no commitlint
