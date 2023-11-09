@@ -35,7 +35,7 @@ jobs:
           echo $?
 
       - name: semantic release dry run
-        uses: codfish/semantic-release-action@18-17
+        uses: thomasv314/semantic-release-action@18-17
         id: semantic-dry-run
         with:
           dry_run: true
@@ -73,7 +73,7 @@ jobs:
         run: docker build -t codfish/actions-playground:latest .
 
       - name: semantic-release
-        uses: codfish/semantic-release-action@18-17
+        uses: thomasv314/semantic-release-action@18-17
         id: semantic
         with:
           branches: |
