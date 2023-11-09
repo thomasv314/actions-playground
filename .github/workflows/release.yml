@@ -27,6 +27,12 @@ jobs:
         with:
           node-version: 18.x
 
+      - name: testing
+        run: |
+          git ls-remote
+          git rev-parse --git-dir
+          echo $?
+
       - name: semantic release dry run
         uses: codfish/semantic-release-action@18-17
         id: semantic-dry-run
@@ -64,9 +70,6 @@ jobs:
 
       - name: docker build
         run: docker build -t codfish/actions-playground:latest .
-
-      - name: testing
-        run: git ls-remote
 
       - name: semantic-release
         uses: codfish/semantic-release-action@18-17
