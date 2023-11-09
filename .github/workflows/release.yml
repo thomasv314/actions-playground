@@ -27,6 +27,23 @@ jobs:
         with:
           node-version: 18.x
 
+      - name: semantic release dry run
+        uses: codfish/semantic-release-action@18-17
+        id: semantic-dry-run
+        with:
+          dry_run: true
+          branches: |
+            [
+              'main',
+              'next',
+              'next-major',
+              {name: 'beta', prerelease: true},
+              {name: 'alpha', prerelease: true}
+            ]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - shell: bash
         run: |
           echo "DOCKER_TAGS=main-${GITHUB_SHA},main,latest" >> $GITHUB_ENV;
@@ -50,23 +67,6 @@ jobs:
 
       - name: testing
         run: git ls-remote
-
-      - name: semantic release dry run
-        uses: codfish/semantic-release-action@18-17
-        id: semantic-dry-run
-        with:
-          dry_run: true
-          branches: |
-            [
-              'main',
-              'next',
-              'next-major',
-              {name: 'beta', prerelease: true},
-              {name: 'alpha', prerelease: true}
-            ]
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: semantic-release
         uses: codfish/semantic-release-action@18-17
